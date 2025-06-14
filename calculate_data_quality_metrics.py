@@ -42,29 +42,7 @@ def calculate_data_quality_metrics(csv_file):
     # 2. COMPLETENESS - % non nulli
     completeness = (df.notna().sum().sum() / total_cells) * 100
     
-    # 3. PRECISION - % corretti
-    precision_checks = 0
-    precision_passed = 0
-    
-    # VIN formato corretto
-    if 'vin' in df.columns:
-        precision_checks += total_records
-        precision_passed += df['vin'].astype(str).str.match(r'^[A-HJ-NPR-Z0-9]{17}$').sum()
-    
-    # Date valide - CORREZIONE: aggiunti parametri per evitare warning
-    if 'saledate' in df.columns:
-        precision_checks += total_records
-        # Corretto: specificato utc=True e format per evitare warning
-        precision_passed += pd.to_datetime(df['saledate'], errors='coerce', utc=True, infer_datetime_format=False).notna().sum()
-    
-    # Make non vuoto
-    if 'make' in df.columns:
-        precision_checks += total_records
-        precision_passed += (df['make'].astype(str).str.len() > 1).sum()
-    
-    precision = (precision_passed / precision_checks * 100) if precision_checks > 0 else completeness
-    
-    # 4. CONSISTENCY - % compatibili
+    # 3. CONSISTENCY - % compatibili
     consistency_checks = 0
     consistency_passed = 0
     
@@ -79,7 +57,7 @@ def calculate_data_quality_metrics(csv_file):
             diff_pct = abs((mmr_vals - price_vals) / mmr_vals) * 100
             consistency_passed += (diff_pct <= 30).sum()
     
-    # Year vs Sale Date - CORREZIONE: gestione migliore delle date
+    # Year vs Sale Date
     if 'year' in df.columns and 'saledate' in df.columns:
         years = pd.to_numeric(df['year'], errors='coerce')
         # Corretto: specificato utc=True e controllato se la conversione è riuscita
@@ -88,7 +66,6 @@ def calculate_data_quality_metrics(csv_file):
         
         if valid_pairs.sum() > 0:
             consistency_checks += valid_pairs.sum()
-            # Corretto: usa solo le date valide per estrarre l'anno
             valid_sale_dates = sale_dates[valid_pairs]
             valid_years = years[valid_pairs]
             if len(valid_sale_dates) > 0:
@@ -97,33 +74,25 @@ def calculate_data_quality_metrics(csv_file):
     
     consistency = (consistency_passed / consistency_checks * 100) if consistency_checks > 0 else 85
     
-    # 5. UNIQUENESS - % non duplicati
+    # 4. UNIQUENESS - % non duplicati
     total_rows = len(df)
     unique_rows = len(df.drop_duplicates())
     uniqueness = (unique_rows / total_rows) * 100
     
-    return validity, completeness, precision, consistency, uniqueness
+    return validity, completeness, consistency, uniqueness
 
 # ESECUZIONE
 if __name__ == "__main__":
-    csv_file = "car_prices.csv"  # Cambia con il tuo file
+    csv_file = "car_prices.csv"
     
     try:
-        validity, completeness, precision, consistency, uniqueness = calculate_data_quality_metrics(csv_file)
+        validity, completeness, consistency, uniqueness = calculate_data_quality_metrics(csv_file)
         
         print("METRICHE QUALITÀ DATI:")
         print(f"Validity: {validity:.2f}%")
         print(f"Completeness: {completeness:.2f}%") 
-        print(f"Precision: {precision:.2f}%")
         print(f"Consistency: {consistency:.2f}%")
         print(f"Uniqueness: {uniqueness:.2f}%")
-        
-        print("\nPER OVERLEAF (copia e incolla):")
-        print(f"Validity: {validity:.2f}\\%")
-        print(f"Completeness: {completeness:.2f}\\%")
-        print(f"Precision: {precision:.2f}\\%")
-        print(f"Consistency: {consistency:.2f}\\%")
-        print(f"Uniqueness: {uniqueness:.2f}\\%")
         
     except Exception as e:
         print(f"Errore: {e}")
