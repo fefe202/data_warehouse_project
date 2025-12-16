@@ -3,6 +3,22 @@
 ## Overview
 This repository contains the source code, data processing scripts, and documentation for the **Data Warehouse and Visualization** project. The objective of this project is to clean, transform, and analyze a dataset of car prices, culminating in a visual report using Tableau.
 
+## Visualization
+
+The analysis results are visualized using Tableau. You can find the workbook in the `tableau/` directory.
+
+### Project Dashboards
+
+Below are the previews of the dashboards created for this project:
+
+![Dashboard 1](docs/dashboard1.png)
+*Dashboard 1 Overview*
+
+![Dashboard 2](docs/dashboard2.png)
+*Dashboard 2 Overview*
+
+*   **`Cartella9.twbx`**: Packaged Tableau workbook containing the dashboards and data.
+
 ## Repository Structure
 
 The repository is organized into the following directories:
@@ -30,22 +46,6 @@ The `scripts/` directory includes various utilities to prepare the data:
 
 *   **Data Quality**:
     *   `calculate_data_quality_metrics.py`: Calculates and reports metrics to ensure data quality and integrity.
-
-## Visualization
-
-The analysis results are visualized using Tableau. You can find the workbook in the `tableau/` directory.
-
-### Project Dashboards
-
-Below are the previews of the dashboards created for this project:
-
-![Dashboard 1](docs/dashboard1.png)
-*Dashboard 1 Overview*
-
-![Dashboard 2](docs/dashboard2.png)
-*Dashboard 2 Overview*
-
-*   **`Cartella9.twbx`**: Packaged Tableau workbook containing the dashboards and data.
 
 ## Documentation
 
